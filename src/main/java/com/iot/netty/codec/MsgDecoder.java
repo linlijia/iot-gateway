@@ -34,7 +34,7 @@ public class MsgDecoder {
         String start = this.parseStringFromBytes(data, 0, 2);
         int packageLength = Integer.parseInt(this.parseStringFromBytes(data, 2, 4));
         System.out.println("infoLength:" + (data.length-10) + ",packageLength:" + packageLength);
-        if (data.length-12 != packageLength) {
+        if (data.length-10 != packageLength) {
             dataPack.setVerifyStatus(false);
             return dataPack;
         }
@@ -82,7 +82,7 @@ public class MsgDecoder {
         }
 
         dataPack.setCnId(cnId);
-        dataPack.setQnId(qnId);;
+        dataPack.setQnId(qnId);
         dataPack.setStId(stId);
         dataPack.setPwId(pwId);
         dataPack.setMnId(mnId);
@@ -141,9 +141,11 @@ public class MsgDecoder {
     }
 
     private static String toLowerCaseFirstOne(String s){
-        if(Character.isLowerCase(s.charAt(0)))
+        if(Character.isLowerCase(s.charAt(0))) {
             return s;
-        else
+        }
+        else {
             return (new StringBuilder()).append(Character.toLowerCase(s.charAt(0))).append(s.substring(1)).toString();
+        }
     }
 }

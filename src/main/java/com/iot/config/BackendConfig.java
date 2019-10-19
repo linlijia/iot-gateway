@@ -25,6 +25,10 @@ public class BackendConfig {
 
     private String deviceStatusUrl;
 
+    private String deviceStatusUrlEx;
+
+    private String deviceStatusUrlEx2;
+
     private String deviceDataUrl;
 
     private String deviceUrl;

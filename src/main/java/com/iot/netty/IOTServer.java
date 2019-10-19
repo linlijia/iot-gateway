@@ -7,10 +7,13 @@ import com.iot.netty.handler.EchoServerHandler;
 import com.iot.netty.handler.IOTServerHandler;
 import com.iot.netty.handler.MqReceiver;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +81,8 @@ public class IOTServer {
                             ch.pipeline().addLast("idleStateHandler",
                                     new IdleStateHandler(IOTConfig.tcp_client_idle_minutes, 0, 0, TimeUnit.MINUTES));
                             //数据上报
+                            ByteBuf buf = Unpooled.copiedBuffer("\r\n".getBytes());
+                            ch.pipeline().addLast("delimiter", new DelimiterBasedFrameDecoder(1024, buf));
                             ch.pipeline().addLast(getIotServerHandler());
                             ch.pipeline().addLast(new EchoServerHandler());
                         }
