@@ -15,7 +15,6 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
-import org.apache.http.client.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +22,17 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
+/**
+ * @author linli
+ */
 @Component
 public class IOTServerHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(MsgDecoder.class);
-    private final String timeFormat = "yyyyMMddHHmmssSSS";
+    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyyMMddHHmmssSSS");
     private MsgDecoder decoder;
 
     private HttpClientHelper httpClientHelper;
@@ -217,9 +218,13 @@ public class IOTServerHandler extends ChannelInboundHandlerAdapter {
      * @return 数据包数据部分
      */
     private String appendDataSegment(DataPack dataPack, String cp) {
-        String qn = DateUtils.formatDate(Calendar.getInstance().getTime(), timeFormat);
-        return "QN=" + qn + ";ST=" + dataPack.getStId() + ";CN=9012;PW=" + dataPack.getPwId() + ";MN=" + dataPack.getMnId() + ";Flag="
-                + 1 + ";CP=&&" + cp + "&&";
+
+        Date date = new Date();
+        synchronized (SIMPLE_DATE_FORMAT) {
+            String qn = SIMPLE_DATE_FORMAT.format(date);
+            return "QN=" + qn + ";ST=" + dataPack.getStId() + ";CN=9012;PW=" + dataPack.getPwId() + ";MN=" + dataPack.getMnId() + ";Flag="
+                    + 1 + ";CP=&&" + cp + "&&";
+        }
     }
 
     private String appendCp(DataPack dataPack) {

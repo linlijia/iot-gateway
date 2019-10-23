@@ -19,10 +19,13 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.scheduling.annotation.EnableAsync;
 
+import java.util.TimeZone;
+
 @SpringBootApplication
 public class IotGatewayApplication implements CommandLineRunner {
 
     public static void main(String[] args) {
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"));
         SpringApplication.run(IotGatewayApplication.class, args);
     }
 
